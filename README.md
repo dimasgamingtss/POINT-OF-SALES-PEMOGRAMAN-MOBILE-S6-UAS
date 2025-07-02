@@ -106,14 +106,14 @@ lib/
 │   ├── product_service.dart # Manajemen produk
 │   ├── transaction_service.dart # Manajemen transaksi
 │   ├── database_service.dart    # Database lokal
-│   └── print_service.dart       # (Jika ada fitur print)
+│   └── print_service.dart       # Cetak Struk
 └── screens/                 # UI screens
     ├── login_screen.dart    # Halaman login/register
     ├── dashboard_screen.dart # Dashboard utama
     ├── products_screen.dart # Manajemen produk
     ├── sales_screen.dart    # Transaksi baru
     ├── transaction_history_screen.dart # Riwayat transaksi
-    └── advanced_reports_screen.dart    # Laporan lanjutan (jika ada)
+    └── advanced_reports_screen.dart    # Laporan lanjutan
 ```
 
 ## Cara Penggunaan
