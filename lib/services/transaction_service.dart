@@ -90,4 +90,34 @@ class TransactionService {
       return 0.0;
     }
   }
+
+  // Hapus transaksi berdasarkan id
+  static Future<bool> deleteTransaction(String transactionId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final transactionsJson = prefs.getStringList(_transactionsKey) ?? [];
+      
+      for (int i = 0; i < transactionsJson.length; i++) {
+        final transaction = Transaction.fromJson(jsonDecode(transactionsJson[i]));
+        if (transaction.id == transactionId) {
+          // Kembalikan stok produk
+          for (final item in transaction.items) {
+            final product = await ProductService.getProductById(item.productId);
+            if (product != null) {
+              final newStock = product.stock + item.quantity;
+              await ProductService.updateProductStock(item.productId, newStock);
+            }
+          }
+          transactionsJson.removeAt(i);
+          await prefs.setStringList(_transactionsKey, transactionsJson);
+          return true;
+        }
+      }
+      
+      return false;
+    } catch (e) {
+      print('Error deleting transaction: $e');
+      return false;
+    }
+  }
 } 

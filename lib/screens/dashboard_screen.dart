@@ -6,6 +6,7 @@ import '../models/user.dart';
 import 'products_screen.dart';
 import 'sales_screen.dart';
 import 'transaction_history_screen.dart';
+import 'advanced_reports_screen.dart';
 import 'login_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -39,6 +40,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
+    }
+  }
+
+  Future<void> _refreshData() async {
+    final user = await AuthService.getCurrentUser();
+    if (user != null) {
+      final dailySales = await TransactionService.getDailySales(user.username);
+      setState(() {
+        _dailySales = dailySales;
+      });
     }
   }
 
@@ -160,23 +171,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     'Transaksi Baru',
                     Icons.add_shopping_cart,
                     Colors.orange,
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SalesScreen(),
-                      ),
-                    ),
+                    () async {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SalesScreen(),
+                        ),
+                      );
+                      // Jika ada transaksi baru, refresh data
+                      if (result == true) {
+                        _refreshData();
+                      }
+                    },
                   ),
                   _buildMenuCard(
                     'Riwayat Transaksi',
                     Icons.history,
                     Colors.purple,
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const TransactionHistoryScreen(),
-                      ),
-                    ),
+                    () async {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TransactionHistoryScreen(),
+                        ),
+                      );
+                      if (result == true) {
+                        _refreshData();
+                      }
+                    },
                   ),
                   _buildMenuCard(
                     'Laporan',
@@ -224,14 +246,62 @@ class _DashboardScreenState extends State<DashboardScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Laporan Penjualan'),
+        title: const Text('Pilih Jenis Laporan'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.today),
-              title: const Text('Penjualan Hari Ini'),
+              leading: const Icon(Icons.today, color: Colors.blue),
+              title: const Text('Laporan Ringkas'),
+              subtitle: const Text('Penjualan hari ini'),
+              onTap: () {
+                Navigator.pop(context);
+                _showBasicReport();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.analytics, color: Colors.green),
+              title: const Text('Laporan Lanjutan'),
+              subtitle: const Text('Grafik dan analisis detail'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AdvancedReportsScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Batal'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showBasicReport() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Laporan Penjualan Hari Ini'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.attach_money, color: Colors.green),
+              title: const Text('Total Penjualan'),
               subtitle: Text('Rp ${NumberFormat('#,###').format(_dailySales)}'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.receipt, color: Colors.blue),
+              title: const Text('Status'),
+              subtitle: Text(_dailySales > 0 ? 'Ada penjualan' : 'Belum ada penjualan'),
             ),
           ],
         ),

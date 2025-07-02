@@ -6,6 +6,7 @@ import '../services/transaction_service.dart';
 import '../models/user.dart';
 import '../models/product.dart';
 import '../models/transaction.dart';
+import 'package:intl/intl.dart';
 
 class SalesScreen extends StatefulWidget {
   const SalesScreen({super.key});
@@ -113,6 +114,9 @@ class _SalesScreenState extends State<SalesScreen> {
       }
     }
 
+    // Simpan total harga sebelum keranjang dikosongkan
+    final totalAmount = _totalPrice;
+
     final success = await TransactionService.createTransaction(
       _cartItems,
       _currentUser!.username,
@@ -127,11 +131,13 @@ class _SalesScreenState extends State<SalesScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Transaksi berhasil! Total: Rp ${_totalPrice.toStringAsFixed(0)}'),
+            content: Text('Transaksi berhasil! Total: Rp ${NumberFormat('#,###').format(totalAmount)}'),
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.pop(context);
+        
+        // Pop kembali ke dashboard dan trigger refresh
+        Navigator.pop(context, true); // true menandakan ada transaksi baru
       }
     } else {
       if (mounted) {
@@ -155,188 +161,194 @@ class _SalesScreenState extends State<SalesScreen> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                // Daftar Produk
-                Expanded(
-                  flex: 2,
-                  child: _products.isEmpty
-                      ? const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.inventory_2,
-                                size: 64,
-                                color: Colors.grey,
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'Belum ada produk',
-                                style: TextStyle(
-                                  fontSize: 18,
+          : SafeArea(
+              child: Column(
+                children: [
+                  // Daftar Produk
+                  Expanded(
+                    child: _products.isEmpty
+                        ? const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.inventory_2,
+                                  size: 64,
                                   color: Colors.grey,
                                 ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Tambahkan produk terlebih dahulu',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : GridView.builder(
-                          padding: const EdgeInsets.all(16),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 1.2,
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 8,
-                          ),
-                          itemCount: _products.length,
-                          itemBuilder: (context, index) {
-                            final product = _products[index];
-                            return Card(
-                              child: InkWell(
-                                onTap: () => _addToCart(product),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        product.name,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        'Rp ${product.price.toStringAsFixed(0)}',
-                                        style: const TextStyle(
-                                          color: Colors.green,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        'Stok: ${product.stock}',
-                                        style: const TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
+                                SizedBox(height: 16),
+                                Text(
+                                  'Belum ada produk',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.grey,
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                ),
-                
-                // Keranjang
-                Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    border: Border(
-                      top: BorderSide(color: Colors.grey[300]!),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Keranjang',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              'Total: Rp ${_totalPrice.toStringAsFixed(0)}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: _cartItems.isEmpty
-                            ? const Center(
-                                child: Text(
-                                  'Keranjang kosong',
+                                SizedBox(height: 8),
+                                Text(
+                                  'Tambahkan produk terlebih dahulu',
                                   style: TextStyle(
                                     color: Colors.grey,
                                   ),
                                 ),
-                              )
-                            : ListView.builder(
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                                itemCount: _cartItems.length,
-                                itemBuilder: (context, index) {
-                                  final item = _cartItems[index];
-                                  return Card(
-                                    child: ListTile(
-                                      title: Text(item.productName),
-                                      subtitle: Text('Rp ${item.price.toStringAsFixed(0)}'),
-                                      trailing: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          IconButton(
-                                            icon: const Icon(Icons.remove),
-                                            onPressed: () => _updateQuantity(index, item.quantity - 1),
+                              ],
+                            ),
+                          )
+                        : GridView.builder(
+                            padding: const EdgeInsets.all(16),
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 1.2,
+                              crossAxisSpacing: 8,
+                              mainAxisSpacing: 8,
+                            ),
+                            itemCount: _products.length,
+                            itemBuilder: (context, index) {
+                              final product = _products[index];
+                              return Card(
+                                child: InkWell(
+                                  onTap: () => _addToCart(product),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          product.name,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
                                           ),
-                                          Text('${item.quantity}'),
-                                          IconButton(
-                                            icon: const Icon(Icons.add),
-                                            onPressed: () => _updateQuantity(index, item.quantity + 1),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          'Rp ${product.price.toStringAsFixed(0)}',
+                                          style: const TextStyle(
+                                            color: Colors.green,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Stok: ${product.stock}',
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  );
-                                },
-                              ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                  ),
+                  // Keranjang
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      border: Border(
+                        top: BorderSide(color: Colors.grey[300]!),
                       ),
-                      if (_cartItems.isNotEmpty)
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _processTransaction,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Keranjang',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              child: const Text(
-                                'Proses Transaksi',
-                                style: TextStyle(fontSize: 16),
+                              Text(
+                                'Total: Rp ${_totalPrice.toStringAsFixed(0)}',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 120,
+                          child: _cartItems.isEmpty
+                              ? const Center(
+                                  child: Text(
+                                    'Keranjang kosong',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                )
+                              : ListView.builder(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  itemCount: _cartItems.length,
+                                  itemBuilder: (context, index) {
+                                    final item = _cartItems[index];
+                                    return Card(
+                                      child: ListTile(
+                                        title: Text(item.productName),
+                                        subtitle: Text('Rp ${item.price.toStringAsFixed(0)}'),
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(Icons.remove),
+                                              onPressed: () => _updateQuantity(index, item.quantity - 1),
+                                            ),
+                                            Text('${item.quantity}'),
+                                            IconButton(
+                                              icon: const Icon(Icons.add),
+                                              onPressed: () => _updateQuantity(index, item.quantity + 1),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                        ),
+                        if (_cartItems.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SafeArea(
+                              top: false,
+                              left: false,
+                              right: false,
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: _processTransaction,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                  ),
+                                  child: const Text(
+                                    'Proses Transaksi',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
     );
   }

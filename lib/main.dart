@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'services/auth_service.dart';
 import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const POSApp());
 }
 
@@ -13,12 +15,13 @@ class POSApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'POS App - Aplikasi Point of Sales',
+      title: 'POS PENJUALAN',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
       home: const SplashScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -38,16 +41,29 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkAuthStatus() async {
-    // Delay untuk menampilkan splash screen
-    await Future.delayed(const Duration(seconds: 2));
-    
-    if (mounted) {
-      final isLoggedIn = await AuthService.isLoggedIn();
-      if (isLoggedIn) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const DashboardScreen()),
-        );
-      } else {
+    try {
+      // Delay untuk menampilkan splash screen
+      await Future.delayed(const Duration(seconds: 2));
+      
+      if (mounted) {
+        final isLoggedIn = await AuthService.isLoggedIn();
+        if (isLoggedIn) {
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const DashboardScreen()),
+            );
+          }
+        } else {
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      // Jika ada error, langsung ke login screen
+      if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const LoginScreen()),
         );
@@ -70,7 +86,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 24),
             const Text(
-              'POS App',
+              'POS PENJUALAN',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,

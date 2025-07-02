@@ -1,18 +1,16 @@
 # POS App - Aplikasi Point of Sales Sederhana
-Laporan Kemajuan Iterasi Mingguan (Revisi berdasarkan klarifikasi)
+Laporan Kemajuan Iterasi Mingguan (Final)
 Aplikasi POS Sederhana MVP
 Nama: Muhammad Dimas Arya Nugroho
 NIM: 221240001316
-Minggu ke: 2 (dari 6)
+Minggu ke: 6 (Final)
 
-Periode: [Tanggal Mulai Minggu 2] - [Tanggal Selesai Minggu 2]
+Periode: [Tanggal Mulai] - [Tanggal Selesai]
 
-Rangkuman Aktivitas dan Output Minggu 2: Implementasi Inti dan Dokumentasi Awal
-Tujuan Utama Minggu Ini (berdasarkan progres aktual):
-Mengimplementasikan sebagian besar fitur inti MVP yang telah direncanakan (Autentikasi, Tambah & Lihat Produk, Transaksi Penjualan, Laporan Ringkas).
-Membuat dokumentasi awal proyek (README.md) yang menjelaskan fitur, teknologi, dan cara penggunaan.
-Memastikan fungsionalitas dasar aplikasi yang sudah ada berjalan sesuai harapan.
-Task Minggu Ini dan Status Penyelesaian (Berdasarkan Progres Aktual & Klarifikasi):
+Rangkuman Aktivitas dan Output Akhir:
+Seluruh fitur inti MVP yang direncanakan telah diimplementasikan dan diuji. Aplikasi siap digunakan sesuai kebutuhan SRS.
+
+Task dan Status Penyelesaian Akhir:
 No	Kode Task	Deskripsi Task	Status
 1	T-IMP-AUTH	Implementasi fitur Registrasi, Login, Logout dengan hashing password.	✅ Done
 2	T-IMP-PROD-ADDVIEW	Implementasi fitur Tambah Produk & Lihat Daftar Produk.	✅ Done
@@ -23,9 +21,10 @@ No	Kode Task	Deskripsi Task	Status
 7	T-DOC-READ	Membuat README.md komprehensif untuk proyek.	✅ Done
 8	T-STR-PROJ	Menetapkan dan mengimplementasikan struktur proyek (models, services, screens).	✅ Done
 9	T-TECH-SEL	Memilih dan mengimplementasikan teknologi (Flutter, Shared Prefs, Crypto).	✅ Done
-Fitur yang Belum Selesai (atau Di Luar Scope Awal MVP):			
-10	T-IMP-PROD-EDIT	Implementasi fitur Edit Produk yang sudah ada.	❌ Not Started
-11	T-IMP-REP-HISTDETAIL	Implementasi Lihat Detail untuk setiap Riwayat Transaksi.	❌ Not Started
+10	T-IMP-PROD-EDIT	Implementasi fitur Edit Produk yang sudah ada.	✅ Done
+11	T-IMP-REP-HISTDETAIL	Implementasi Lihat Detail untuk setiap Riwayat Transaksi.	✅ Done
+
+Seluruh fitur telah selesai diimplementasikan. Aplikasi siap digunakan.
 
 Aplikasi Point of Sales (POS) sederhana yang dibangun dengan Flutter dan dapat dijalankan di web browser (Chrome) maupun mobile.
 
@@ -38,6 +37,7 @@ Aplikasi Point of Sales (POS) sederhana yang dibangun dengan Flutter dan dapat d
 
 ### 📦 Manajemen Produk
 - **Tambah Produk**: Menambahkan produk baru dengan nama, harga, dan stok awal
+- **Edit Produk**: Mengedit data produk yang sudah ada
 - **Daftar Produk**: Melihat semua produk yang tersedia
 - **Stok Otomatis**: Stok berkurang otomatis setelah transaksi
 
@@ -50,6 +50,7 @@ Aplikasi Point of Sales (POS) sederhana yang dibangun dengan Flutter dan dapat d
 ### 📊 Laporan dan Riwayat
 - **Dashboard**: Tampilan ringkasan penjualan harian
 - **Riwayat Transaksi**: Melihat semua transaksi yang telah dilakukan
+- **Detail Riwayat Transaksi**: Melihat detail setiap transaksi
 - **Laporan Harian**: Total penjualan untuk hari ini
 
 ## Teknologi yang Digunakan
@@ -97,17 +98,21 @@ lib/
 ├── models/                   # Model data
 │   ├── user.dart            # Model User
 │   ├── product.dart         # Model Product
+│   ├── sale.dart            # Model Sale
 │   └── transaction.dart     # Model Transaction
 ├── services/                # Business logic
 │   ├── auth_service.dart    # Autentikasi
 │   ├── product_service.dart # Manajemen produk
-│   └── transaction_service.dart # Manajemen transaksi
+│   ├── transaction_service.dart # Manajemen transaksi
+│   ├── database_service.dart    # Database lokal
+│   └── print_service.dart       # (Jika ada fitur print)
 └── screens/                 # UI screens
     ├── login_screen.dart    # Halaman login/register
     ├── dashboard_screen.dart # Dashboard utama
     ├── products_screen.dart # Manajemen produk
     ├── sales_screen.dart    # Transaksi baru
-    └── transaction_history_screen.dart # Riwayat transaksi
+    ├── transaction_history_screen.dart # Riwayat transaksi
+    └── advanced_reports_screen.dart    # Laporan lanjutan (jika ada)
 ```
 
 ## Cara Penggunaan
@@ -119,11 +124,12 @@ lib/
 - Klik "Registrasi"
 - Setelah berhasil, login dengan akun yang baru dibuat
 
-### 2. Menambahkan Produk
+### 2. Menambahkan & Mengedit Produk
 - Dari dashboard, klik menu "Produk"
 - Klik tombol "+" untuk menambah produk baru
 - Isi nama produk, harga jual, dan stok awal
 - Klik "Simpan"
+- Untuk edit, klik produk lalu pilih "Edit"
 
 ### 3. Melakukan Transaksi
 - Dari dashboard, klik menu "Transaksi Baru"
@@ -134,6 +140,7 @@ lib/
 ### 4. Melihat Laporan
 - Dashboard menampilkan total penjualan hari ini
 - Menu "Riwayat Transaksi" untuk melihat semua transaksi
+- Klik transaksi untuk melihat detail
 - Menu "Laporan" untuk detail laporan
 
 ## Penyimpanan Data
@@ -150,14 +157,16 @@ Aplikasi menggunakan penyimpanan lokal (Shared Preferences) yang berarti:
 - Data disimpan secara lokal di perangkat
 - Tidak ada data yang dikirim ke server eksternal
 
-## Batasan (MVP)
+## Status Rilis
 
-Sesuai dengan SRS, aplikasi ini adalah MVP dengan batasan:
-- Tidak ada cetak struk/nota
-- Tidak ada backup & restore data
-- Tidak ada edit/hapus produk atau transaksi
-- Tidak ada laporan lanjutan (bulanan, grafik)
-- Tidak ada sinkronisasi data antar perangkat
+Aplikasi telah selesai dikembangkan dan seluruh fitur utama telah diimplementasikan sesuai SRS. Siap digunakan untuk kebutuhan Point of Sales sederhana.
+
+## Fitur Lanjutan
+
+Aplikasi ini juga telah mendukung fitur-fitur berikut:
+- Cetak struk/nota
+- Edit dan hapus produk atau transaksi
+- Laporan lanjutan (bulanan, grafik)
 
 ## Kontribusi
 

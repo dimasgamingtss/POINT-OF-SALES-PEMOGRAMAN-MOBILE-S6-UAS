@@ -50,6 +50,55 @@ class ProductService {
     }
   }
 
+  // Update produk (nama, harga, stok)
+  static Future<bool> updateProduct(String productId, String name, double price, int stock) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final productsJson = prefs.getStringList(_productsKey) ?? [];
+      
+      for (int i = 0; i < productsJson.length; i++) {
+        final product = Product.fromJson(jsonDecode(productsJson[i]));
+        if (product.id == productId) {
+          final updatedProduct = product.copyWith(
+            name: name,
+            price: price,
+            stock: stock,
+          );
+          productsJson[i] = jsonEncode(updatedProduct.toJson());
+          await prefs.setStringList(_productsKey, productsJson);
+          return true;
+        }
+      }
+      
+      return false;
+    } catch (e) {
+      print('Error updating product: $e');
+      return false;
+    }
+  }
+
+  // Hapus produk
+  static Future<bool> deleteProduct(String productId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final productsJson = prefs.getStringList(_productsKey) ?? [];
+      
+      for (int i = 0; i < productsJson.length; i++) {
+        final product = Product.fromJson(jsonDecode(productsJson[i]));
+        if (product.id == productId) {
+          productsJson.removeAt(i);
+          await prefs.setStringList(_productsKey, productsJson);
+          return true;
+        }
+      }
+      
+      return false;
+    } catch (e) {
+      print('Error deleting product: $e');
+      return false;
+    }
+  }
+
   // Update stok produk
   static Future<bool> updateProductStock(String productId, int newStock) async {
     try {
