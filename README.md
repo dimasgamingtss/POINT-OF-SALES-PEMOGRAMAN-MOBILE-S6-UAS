@@ -173,6 +173,3 @@ Aplikasi ini juga telah mendukung fitur-fitur berikut:
 
 Aplikasi ini dikembangkan sebagai proyek MVP sesuai dengan Software Requirements Specification (SRS) yang diberikan.
 
-## Lisensi
-
-Proyek ini dibuat untuk tujuan pembelajaran dan demonstrasi aplikasi POS sederhana.
