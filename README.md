@@ -11,18 +11,19 @@ Rangkuman Aktivitas dan Output Akhir:
 Seluruh fitur inti MVP yang direncanakan telah diimplementasikan dan diuji. Aplikasi siap digunakan sesuai kebutuhan SRS.
 
 Task dan Status Penyelesaian Akhir:
-No	Kode Task	Deskripsi Task	Status
-1	T-IMP-AUTH	Implementasi fitur Registrasi, Login, Logout dengan hashing password.	✅ Done
-2	T-IMP-PROD-ADDVIEW	Implementasi fitur Tambah Produk & Lihat Daftar Produk.	✅ Done
-3	T-IMP-PROD-STOCK	Implementasi update stok otomatis setelah transaksi.	✅ Done
-4	T-IMP-TRX	Implementasi fitur Transaksi (Keranjang, Kalkulasi, Validasi Stok, Simpan).	✅ Done
-5	T-IMP-REP-DASH	Implementasi Dashboard ringkasan penjualan harian.	✅ Done
-6	T-IMP-REP-HISTLIST	Implementasi tampilan daftar Riwayat Transaksi (tanpa detail).	✅ Done
-7	T-DOC-READ	Membuat README.md komprehensif untuk proyek.	✅ Done
-8	T-STR-PROJ	Menetapkan dan mengimplementasikan struktur proyek (models, services, screens).	✅ Done
-9	T-TECH-SEL	Memilih dan mengimplementasikan teknologi (Flutter, Shared Prefs, Crypto).	✅ Done
-10	T-IMP-PROD-EDIT	Implementasi fitur Edit Produk yang sudah ada.	✅ Done
-11	T-IMP-REP-HISTDETAIL	Implementasi Lihat Detail untuk setiap Riwayat Transaksi.	✅ Done
+| No | Kode Task            | Deskripsi                                                                      | Status |
+| -- | -------------------- | ------------------------------------------------------------------------------ | ------ |
+| 1  | T-IMP-AUTH           | Implementasi fitur Registrasi, Login, Logout dengan hashing password           | ✅ Done |
+| 2  | T-IMP-PROD-ADDVIEW   | Implementasi fitur Tambah Produk & Lihat Daftar Produk                         | ✅ Done |
+| 3  | T-IMP-PROD-STOCK     | Implementasi update stok otomatis setelah transaksi                            | ✅ Done |
+| 4  | T-IMP-TRX            | Implementasi fitur Transaksi (Keranjang, Kalkulasi, Validasi Stok, Simpan)     | ✅ Done |
+| 5  | T-IMP-REP-DASH       | Implementasi Dashboard ringkasan penjualan harian                              | ✅ Done |
+| 6  | T-IMP-REP-HISTLIST   | Implementasi tampilan daftar Riwayat Transaksi (tanpa detail)                  | ✅ Done |
+| 7  | T-DOC-READ           | Membuat README.md komprehensif untuk proyek                                    | ✅ Done |
+| 8  | T-STR-PROJ           | Menetapkan dan mengimplementasikan struktur proyek (models, services, screens) | ✅ Done |
+| 9  | T-TECH-SEL           | Memilih dan mengimplementasikan teknologi (Flutter, Shared Prefs, Crypto)      | ✅ Done |
+| 10 | T-IMP-PROD-EDIT      | Implementasi fitur Edit Produk yang sudah ada                                  | ✅ Done |
+| 11 | T-IMP-REP-HISTDETAIL | Implementasi Lihat Detail untuk setiap Riwayat Transaksi                       | ✅ Done |
 
 Seluruh fitur telah selesai diimplementasikan. Aplikasi siap digunakan.
 
