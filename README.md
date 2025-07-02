@@ -1,14 +1,14 @@
-# POS App - Aplikasi Point of Sales Sederhana
-Laporan Kemajuan Iterasi Mingguan (Final)
-Aplikasi POS Sederhana MVP
+📋 Laporan Kemajuan Iterasi Mingguan (Final)
+Aplikasi: POS Sederhana (MVP)
 Nama: Muhammad Dimas Arya Nugroho
 NIM: 221240001316
 Minggu ke: 6 (Final)
 
-Periode: [Tanggal Mulai] - [Tanggal Selesai]
+Periode: [Tanggal Mulai] – [Tanggal Selesai]
 
-Rangkuman Aktivitas dan Output Akhir:
-Seluruh fitur inti MVP yang direncanakan telah diimplementasikan dan diuji. Aplikasi siap digunakan sesuai kebutuhan SRS.
+🎯 Rangkuman Aktivitas dan Output Akhir
+Seluruh fitur inti MVP yang direncanakan telah diimplementasikan dan diuji.
+Aplikasi siap digunakan sesuai kebutuhan SRS (Software Requirement Specification).
 
 Task dan Status Penyelesaian Akhir:
 | No | Kode Task            | Deskripsi                                                                      | Status |
